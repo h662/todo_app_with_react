@@ -4,7 +4,6 @@ import com.h662.backend.dto.TodoDto;
 import com.h662.backend.dto.TodoResponseDto;
 import com.h662.backend.dto.TodoStatsDto;
 import com.h662.backend.dto.TodoUpdateDto;
-import com.h662.backend.model.Todo;
 import com.h662.backend.service.TodoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
