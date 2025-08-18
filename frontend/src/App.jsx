@@ -5,6 +5,8 @@ import TodoForm from "./components/TodoForm";
 import TodoList from "./components/TodoList";
 import useTodos from "./hooks/useTodos";
 import ControlPanel from "./components/ControlPanel";
+import LoadingSpinner from "./components/LoadingSpinner";
+import ErrorMessage from "./components/ErrorMessage";
 
 const App = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -19,6 +21,10 @@ const App = () => {
     deleteTodo,
     searchTerm,
     setSearchTerm,
+    filter,
+    setFilter,
+    loading,
+    error,
   } = useTodos();
 
   const handleSearchChange = (e) => {
@@ -46,24 +52,33 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-red-100 max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-8">
         <Header />
         <StatsCard stats={stats} />
 
         <ControlPanel
           searchTerm={searchTerm}
           onSearchChange={handleSearchChange}
+          filter={filter}
+          onFilterChange={setFilter}
           onAddNew={() => setIsFormOpen(true)}
         />
 
-        <ul className="space-y-3">
-          <TodoList
-            todos={todos}
-            onToggle={toggleTodo}
-            onEdit={handleEditTodo}
-            onDelete={deleteTodo}
-          />
-        </ul>
+        <ErrorMessage error={error} />
+
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <ul className="space-y-3">
+            <TodoList
+              todos={todos}
+              onToggle={toggleTodo}
+              onEdit={handleEditTodo}
+              onDelete={deleteTodo}
+              searchTerm={searchTerm}
+            />
+          </ul>
+        )}
 
         <TodoForm
           isOpen={isFormOpen}
