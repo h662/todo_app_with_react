@@ -4,10 +4,17 @@ import { todoApi } from "../services/api";
 const useTodos = () => {
   const [todos, setTodos] = useState([]);
   const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0 });
+  const [searchTerm, setSearchTerm] = useState("");
 
   const loadTodos = async () => {
     try {
-      const data = await todoApi.getAllTodos();
+      let data;
+
+      if (searchTerm.trim()) {
+        data = await todoApi.searchTodos(searchTerm);
+      } else {
+        data = await todoApi.getAllTodos();
+      }
 
       setTodos(data);
     } catch (err) {
@@ -21,6 +28,16 @@ const useTodos = () => {
       setStats(statsData);
     } catch (err) {
       console.error("Error loading stats:", err);
+    }
+  };
+
+  const createTodo = async (todoData) => {
+    try {
+      await todoApi.createTodo(todoData);
+      await loadTodos();
+      await loadStats();
+    } catch (err) {
+      console.error("Error creating todo:", err);
     }
   };
 
@@ -61,12 +78,19 @@ const useTodos = () => {
     loadStats();
   }, []);
 
+  useEffect(() => {
+    loadTodos();
+  }, [searchTerm]);
+
   return {
     todos,
     stats,
     toggleTodo,
     updateTodo,
     deleteTodo,
+    createTodo,
+    searchTerm,
+    setSearchTerm,
   };
 };
 
